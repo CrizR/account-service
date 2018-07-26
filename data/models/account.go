@@ -10,7 +10,7 @@ type Account struct {
 	FirstName  string
 	LastName   string
 	Bio        string
-	Profession string
+	Industry   string
 	Education  string
 	State      string
 	Reputation int
