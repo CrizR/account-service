@@ -1,10 +1,18 @@
 package models
 
-/*
-Account represents details for a particular user account.
-*/
+// AccountType represents authorization level of an account.
+type AccountType int
+
+const (
+	Admin AccountType = iota
+	Standard
+	Advanced
+)
+
+// Account represents details for a particular user account.
 type Account struct {
-	AccoutType string
+	ID         int
+	AccoutType AccountType
 	Email      string
 	Password   string
 	FirstName  string
