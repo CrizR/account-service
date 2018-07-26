@@ -4,7 +4,7 @@ package models
 Account represents details for a particular user account.
 */
 type Account struct {
-	AccoutType string
+	AccountType string
 	Email      string
 	Password   string
 	FirstName  string
