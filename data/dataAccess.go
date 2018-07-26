@@ -1,14 +1,11 @@
 package data
 
-import (
-	"log"
-)
-
 type DataAccess interface {
-	CreateUser([]string) (result []dbModel.SkuData, err error)
-	FindAllUsers(string) (result []dbModel.OraResponse, err error)
-	FindUserById(string) (result []dbModel.OraResponse, err error)
-	FindUserByEmail(string) (result []dbModel.OraResponse, err error)
-	UpdateUser(string) (result []dbModel.OraResponse, err error)
-	RemoveUser(string) (result []dbModel.OraResponse, err error)
+	// Not entirely sure what to the return type is going to be here
+	CreateUser([]string) (result string, err error)
+	FindAllUsers(string) (result string, err error)
+	FindUserById(string) (result string, err error)
+	FindUserByEmail(string) (result string, err error)
+	UpdateUser(string) (result string, err error)
+	RemoveUser(string) (result string, err error)
 }
