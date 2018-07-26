@@ -11,7 +11,7 @@ const (
 
 // Account represents details for a particular user account.
 type Account struct {
-	AccountType string
+	AccountType AccountType
 	ID         int
 	Email      string
 	Password   string
