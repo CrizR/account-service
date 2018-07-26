@@ -1,24 +1,14 @@
 package data
 
 import (
-	"fmt"
-
-	"golang.org/x/net/context"
-
-	firebase "firebase.google.com/go"
-	"firebase.google.com/go/auth"
-
-	"google.golang.org/api/option"
+	"log"
 )
 
-type DataAccess struct {
-	ecclesiaDb *firebase.App
+type DataAccess interface {
+	CreateUser([]string) (result []dbModel.SkuData, err error)
+	FindAllUsers(string) (result []dbModel.OraResponse, err error)
+	FindUserById(string) (result []dbModel.OraResponse, err error)
+	FindUserByEmail(string) (result []dbModel.OraResponse, err error)
+	UpdateUser(string) (result []dbModel.OraResponse, err error)
+	RemoveUser(string) (result []dbModel.OraResponse, err error)
 }
-
-opt := option.WithCredentialsFile("keys/ecclesia-firebase-key.json")
-
-app, err := firebase.NewApp(context.Background(), nil, opt)
-if err != nil {
-	log.Fatalf("error initializing app: %v\n", err)
-}
-
