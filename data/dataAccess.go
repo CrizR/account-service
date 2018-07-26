@@ -11,7 +11,8 @@ import (
 	"google.golang.org/api/option"
 )
 
-type DataAccess interface {
+type DataAccess struct {
+	ecclesiaDb *firebase.App
 }
 
 opt := option.WithCredentialsFile("keys/ecclesia-firebase-key.json")
@@ -20,3 +21,4 @@ app, err := firebase.NewApp(context.Background(), nil, opt)
 if err != nil {
 	log.Fatalf("error initializing app: %v\n", err)
 }
+
