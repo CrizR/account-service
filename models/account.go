@@ -11,16 +11,16 @@ const (
 
 // Account represents details for a particular user account.
 type Account struct {
-	ID         int
-	AccoutType AccountType
-	Email      string
-	Password   string
-	FirstName  string
-	LastName   string
-	Bio        string
-	Industry   string
-	Education  string
-	State      string
-	Reputation int
-	Interests  []string
+	ID          int
+	AccountType AccountType
+	Email       string
+	Password    string
+	FirstName   string
+	LastName    string
+	Bio         string
+	Industry    string
+	Education   string
+	State       string
+	Reputation  int
+	Interests   []string
 }

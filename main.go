@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"github.com/ecclesia-dev/account-service/server"
 )
 
+var bindTo string
+
 func main() {
-	fmt.Println("The beginning is here")
+	serv := server.Start()
 }
