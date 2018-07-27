@@ -1,58 +1,57 @@
 package data
 
 import (
-	//"fmt"
-
-	//"golang.org/x/net/context"
+	"context"
+	"log"
 
 	firebase "firebase.google.com/go"
+	"google.golang.org/api/option"
 	//"firebase.google.com/go/auth"
-
-	//option "google.golang.org/api/option"
 )
 
-type DB struct {
-	ecclesiaDb *firebase.App
+type Firebase struct {
+	app *firebase.App
 }
 
-//The fuck, why is this not working >
-opt, err := option.WithCredentialsFile("keys/ecclesia-firebase-key.json")
+func (fb *Firebase) New() {
+	opt := option.WithCredentialsFile("keys/ecclesia-firebase-key.json")
 
-app, err := firebase.NewApp(context.Background(), nil, opt)
-if err != nil {
-log.Fatalf("error initializing app: %v\n", err)
-}
-
-func CreateUser([]string) (result string, err error) {
-
-	return result, err
-
-}
-
-func FindAllUsers(string) (result string, err error) {
-
-	return result, err
-}
-
-func FindUserById(string) (result string, err error) {
-
-	return result, err
+	// TODO: set FIREBASE_CONFIG as an envornment variable so config can
+	// 		 be passed in as nil.
+	var err error
+	fb.app, err = firebase.NewApp(context.Background(), nil, opt)
+	if err != nil {
+		log.Fatalf("error initializing app: %v\n", err)
+	}
 
 }
 
-func FindUserByEmail(string) (result string, err error) {
+func (fb *Firebase) CreateUser([]string) (string, error) {
 
-	return result, err
-
+	return "", nil
 }
 
-func UpdateUser(string) (result string, err error) {
+func (fb *Firebase) FindAllUsers(string) (string, error) {
 
-	return result, err
-
+	return "", nil
 }
-func RemoveUser(string) (result string, err error) {
 
-	return result, err
+func (fb *Firebase) FindUserById(string) (string, error) {
 
+	return "", nil
+}
+
+func (fb *Firebase) FindUserByEmail(string) (string, error) {
+
+	return "", nil
+}
+
+func (fb *Firebase) UpdateUser(string) (string, error) {
+
+	return "", nil
+}
+
+func (fb *Firebase) RemoveUser(string) (string, error) {
+
+	return "", nil
 }
