@@ -5,53 +5,79 @@ import (
 	"log"
 
 	firebase "firebase.google.com/go"
+	"github.com/ecclesia-dev/account-service/models"
 	"google.golang.org/api/option"
-	//"firebase.google.com/go/auth"
 )
 
 type Firebase struct {
 	app *firebase.App
 }
 
-func (fb *Firebase) New() {
+func NewFirebase() DataAccess {
 	opt := option.WithCredentialsFile("keys/ecclesia-firebase-key.json")
 
 	// TODO: set FIREBASE_CONFIG as an envornment variable so config can
 	// 		 be passed in as nil.
-	var err error
-	fb.app, err = firebase.NewApp(context.Background(), nil, opt)
+	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		log.Fatalf("error initializing app: %v\n", err)
 	}
 
+	return Firebase{app: app}
 }
 
-func (fb *Firebase) CreateUser([]string) (string, error) {
+func (fb Firebase) CreateUser([]string) error {
 
-	return "", nil
+	return nil
 }
 
-func (fb *Firebase) FindAllUsers(string) (string, error) {
+func (fb Firebase) FindAllUsers() ([]models.Account, error) {
 
-	return "", nil
+	return nil, nil
 }
 
-func (fb *Firebase) FindUserById(string) (string, error) {
+func (fb Firebase) FindUserByID(string) (models.Account, error) {
 
-	return "", nil
+	return models.Account{
+		ID:          0,
+		AccountType: models.StandardAccount,
+		Email:       "",
+		Password:    "",
+		FirstName:   "",
+		LastName:    "",
+		Bio:         "",
+		Industry:    "",
+		Education:   "",
+		State:       "",
+		Reputation:  0,
+		Interests:   nil,
+	}, nil
 }
 
-func (fb *Firebase) FindUserByEmail(string) (string, error) {
+func (fb Firebase) FindUserByEmail(string) (models.Account, error) {
 
-	return "", nil
+	return models.Account{
+		ID:          0,
+		AccountType: models.StandardAccount,
+		Email:       "",
+		Password:    "",
+		FirstName:   "",
+		LastName:    "",
+		Bio:         "",
+		Industry:    "",
+		Education:   "",
+		State:       "",
+		Reputation:  0,
+		Interests:   nil,
+	}, nil
 }
 
-func (fb *Firebase) UpdateUser(string) (string, error) {
+func (fb Firebase) UpdateUser(string) error {
 
-	return "", nil
+	return nil
 }
 
-func (fb *Firebase) RemoveUser(string) (string, error) {
+func (fb Firebase) RemoveUser(string) error {
 
-	return "", nil
+	return nil
 }

@@ -4,9 +4,9 @@ package models
 type AccountType int
 
 const (
-	Admin AccountType = iota
-	Standard
-	Advanced
+	AdminAccount AccountType = iota
+	StandardAccount
+	AdvancedAccount
 )
 
 // Account represents details for a particular user account.
