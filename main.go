@@ -1,11 +1,14 @@
 package main
 
 import (
+	"github.com/ecclesia-dev/account-service/controllers"
 	"github.com/ecclesia-dev/account-service/server"
 )
 
 var bindTo string
 
 func main() {
-	serv := server.Start()
+	acctCtlr := controllers.NewAccountController()
+	serv := server.New()
+	serv.Start()
 }

@@ -4,6 +4,7 @@ type AccountController interface {
 	Stop()
 }
 
-func New() {
+func NewAccountController() AccountController {
 
+	return nil
 }
