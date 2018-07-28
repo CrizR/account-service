@@ -78,7 +78,7 @@ func (fb *Firebase) RemoveUser(string) (string, error) {
 	return "", nil
 }
 
-func (fb * Firebase) converter(data map[string]interface{}) (models.Account) {
+func converter(data map[string]interface{}) (models.Account) {
 	return models.Account{
 		ID:          data["ID"].(int),
 		AccountType: data["AccountType"].(models.AccountType),
