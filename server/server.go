@@ -1,26 +1,43 @@
 package server
 
 import (
+	"os"
+
 	"github.com/ecclesia-dev/account-service/controllers"
-	"github.com/gorilla/mux"
+	"github.com/labstack/echo"
+	mw "github.com/labstack/echo/middleware"
 )
 
-type server struct {
-	router   *mux.Router
+type Server struct {
+	echo     *echo.Echo
 	accounts controllers.AccountController
 }
 
-func (s *server) Start() {
-	s.router = mux.NewRouter()
-	s.setRoutes()
+func New(ctlr controllers.AccountController) Server {
+	e := echo.New()
+	e.HideBanner = true
+	logger := mw.LoggerWithConfig(mw.LoggerConfig{
+		Skipper: mw.DefaultSkipper,
+		Format: `{"time":"${time_rfc3339_nano}","remote_ip":"${remote_ip}","host":"${host}",` +
+			`"method":"${method}","uri":"${uri}","status":${status}, "latency":${latency}}` + "\n",
+		Output: os.Stdout,
+	})
+	e.Use(logger)
+
+	serv := Server{echo: e, accounts: ctlr}
+	return serv
 }
 
-func (s *server) setRoutes() {
-	s.router.HandleFunc("/api/", s.getRoutes).Methods("GET", "POST")
-	s.router.HandleFunc("/api/create/{userId}", s.createUser).Methods("POST")
-	s.router.HandleFunc("/api/search/{userId}", s.getUserByID).Methods("POST")
-	s.router.HandleFunc("/api/search/users", s.getAllUsers).Methods("GET", "POST")
-	s.router.HandleFunc("/api/search/{email}", s.getUserByEmail).Methods("POST")
-	s.router.HandleFunc("/api/remove/{userId}", s.removeUserByID).Methods("POST")
-	s.router.HandleFunc("/api/update/{userId}", s.updateUser).Methods("POST")
+func (s *Server) Start(port string) {
+	s.setRoutes()
+	s.echo.Logger.Fatal(s.echo.Start(port))
+}
+
+func (s *Server) setRoutes() {
+	s.echo.POST("/api/create/{userId}", s.createUser)
+	s.echo.GET("/api/search/users/{userId}", s.getUserByID)
+	s.echo.GET("/api/search/users", s.getAllUsers)
+	s.echo.GET("/api/search/email/{email}", s.getUserByEmail)
+	s.echo.DELETE("/api/remove/user/{userId}", s.removeUserByID)
+	s.echo.PUT("/api/update/user/{userId}", s.updateUser)
 }

@@ -4,12 +4,11 @@ import (
 	"context"
 	"log"
 
-	"firebase.google.com/go"
+	firebase "firebase.google.com/go"
+	"github.com/ecclesia-dev/account-service/models"
 	"google.golang.org/api/option"
-	//"firebase.google.com/go/auth"
-	"user-service/models"
 	"cloud.google.com/go/firestore"
-	"google.golang.org/api/iterator"
+	"google.golang.org/api/iterator"  
 )
 
 type Firebase struct {
@@ -17,21 +16,27 @@ type Firebase struct {
 	client *firestore.Client
 }
 
-func (fb *Firebase) New() {
+func NewFirebase() DataAccess {
 	opt := option.WithCredentialsFile("keys/ecclesia-firebase-key.json")
+
+
+	// TODO: set FIREBASE_CONFIG as an envornment variable so config can
+	// 		 be passed in as nil.
+	app, err := firebase.NewApp(context.Background(), nil, opt)
 	// TODO: set FIREBASE_CONFIG as an envornment variable so config can be passed in as nil.
-	var err error
-	fb.app, err = firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	fb.client, err = fb.app.Firestore(context.Background())
+  var err error
+  client, err = app.Firestore(context.Background())
 	if err != nil {
 		log.Fatalf("error initializing app: %v\n", err)
 	}
+
+  return Firebase{app: app, client: client}
 }
 
-func (fb *Firebase) CreateUser(user map[string]interface{}) (error) {
+func (fb Firebase) CreateUser(user map[string]interface{}) (error) {
 	//SHOULD WE CHECK TO SEE IF USER WITH SAME EMAIL ALREADY EXISTS HERE?
 	var err error
 	_, _, err = fb.client.Collection("users").Add(context.Background(), user)
@@ -41,7 +46,7 @@ func (fb *Firebase) CreateUser(user map[string]interface{}) (error) {
 	return err
 }
 
-func (fb *Firebase) FindAllUsers(string) ([]models.Account, error) {
+func (fb Firebase) FindAllUsers(string) ([]models.Account, error) {
 	iter := fb.client.Collection("users").Documents(context.Background())
 	var accounts []models.Account
 	for {
@@ -58,7 +63,7 @@ func (fb *Firebase) FindAllUsers(string) ([]models.Account, error) {
 	return accounts, nil
 }
 
-func (fb *Firebase) FindUserById(id string) (models.Account, error) {
+func (fb Firebase) FindUserById(id string) (models.Account, error) {
 	dsnap, err := fb.client.Collection("users").Doc(id).Get(context.Background())
 	if err != nil {
 		log.Fatalf("Failed to Retrieve ID: %v", err)
@@ -67,7 +72,7 @@ func (fb *Firebase) FindUserById(id string) (models.Account, error) {
 	return converter(dsnap.Data()), nil
 }
 
-func (fb *Firebase) FindUserByEmail(email string) (models.Account, error) {
+func (fb Firebase) FindUserByEmail(email string) (models.Account, error) {
 	iter := fb.client.Collection("users").OrderBy("email", firestore.Asc).Where("email", "=", email).Limit(1).Documents(context.Background())
 	for {
 		doc, err := iter.Next()
@@ -83,7 +88,7 @@ func (fb *Firebase) FindUserByEmail(email string) (models.Account, error) {
 	return models.Account{}, nil
 }
 
-func (fb *Firebase) UpdateUser(id string, updates map[string]interface{}) (error) {
+func (fb Firebase) UpdateUser(id string, updates map[string]interface{}) (error) {
 	_, err := fb.client.Collection("users").Doc(id).Set(context.Background(), updates, firestore.MergeAll)
 	if err != nil {
 		log.Fatalf("Failed to Update User: %v", err)
@@ -92,7 +97,7 @@ func (fb *Firebase) UpdateUser(id string, updates map[string]interface{}) (error
 	return nil
 }
 
-func (fb *Firebase) RemoveUser(id string) (error) {
+func (fb Firebase) RemoveUser(id string) (error) {
 	_, err := fb.client.Collection("users").Doc(id).Delete(context.Background())
 	if err != nil {
 		log.Fatalf("Failed to Remove User: %v", err)

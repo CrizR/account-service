@@ -1,51 +1,30 @@
 package server
 
 import (
-	"encoding/json"
-	"net/http"
+	"github.com/labstack/echo"
 )
 
-func (s *server) getRoutes(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	// Is there a better way to return this?
-	var endpoints struct {
-		PrintRoutes    string `json:"/api/"`
-		CreateUser     string `json:"/api/create/{userId}"`
-		GetUserByID    string `json:"/api/search/{userId}"`
-		GetAllUsers    string `json:"/api/search/users"`
-		GetUserByEmail string `json:"/api/search/{email}"`
-		RemoveUserByID string `json:"/api/remove/{userId}"`
-		UpdateUser     string `json:"/api/update/{userId}"`
-	}
-	json.NewEncoder(w).Encode(endpoints)
+func (s *Server) createUser(ctx echo.Context) error {
+
+	return nil
 }
 
-func (s *server) createUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
+func (s *Server) getAllUsers(ctx echo.Context) error {
+	return nil
 }
 
-func (s *server) getAllUsers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
+func (s *Server) getUserByEmail(ctx echo.Context) error {
+	return nil
 }
 
-func (s *server) getUserByEmail(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
+func (s *Server) getUserByID(ctx echo.Context) error {
+	return nil
 }
 
-func (s *server) getUserByID(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
+func (s *Server) removeUserByID(ctx echo.Context) error {
+	return nil
 }
 
-func (s *server) removeUserByID(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
-}
-
-func (s *server) updateUser(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
+func (s *Server) updateUser(ctx echo.Context) error {
+	return nil
 }
