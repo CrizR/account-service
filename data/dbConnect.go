@@ -84,7 +84,7 @@ func (fb *Firebase) FindUserByEmail(email string) (models.Account, error) {
 }
 
 func (fb *Firebase) UpdateUser(id string, updates map[string]interface{}) (error) {
-	_, err := fb.client.Collection("users").Doc(id).Set(context.Background(), updates)
+	_, err := fb.client.Collection("users").Doc(id).Set(context.Background(), updates, firestore.MergeAll)
 	if err != nil {
 		log.Fatalf("Failed to Update User: %v", err)
 		return err
