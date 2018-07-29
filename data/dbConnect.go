@@ -84,34 +84,7 @@ func (fb *Firebase) FindUserByEmail(email string) (models.Account, error) {
 }
 
 func (fb *Firebase) UpdateUser(id string, updates map[string]interface{}) (error) {
-	dsnap, err := fb.client.Collection("users").Doc(id).Get(context.Background())
-	if err != nil {
-		log.Fatalf("Failed to Retrieve ID: %v", err)
-	}
-	var data = dsnap.Data()
-	var newUser = map[string]interface{}{
-		"ID":          "",
-		"AccountType": models.Admin,
-		"Email":       "",
-		"Password":    "",
-		"FirstName":   "",
-		"LastName":    "",
-		"Bio":         "",
-		"Industry":    "",
-		"Education":   "",
-		"State":       "",
-		"Reputation":  0,
-		"Interests":   []string{},
-	}
-	for accountType := range newUser {
-		if val, ok := updates[accountType]; ok {
-			newUser[accountType] = val
-		} else {
-			newUser[accountType] = data[accountType]
-		}
-	}
-	fb.RemoveUser(id)
-	fb.CreateUser(newUser)
+	_, err := fb.client.Collection("users").Doc(id).Set(context.Background(), updates)
 	if err != nil {
 		log.Fatalf("Failed to Update User: %v", err)
 		return err
