@@ -19,7 +19,6 @@ type Firebase struct {
 
 func (fb *Firebase) New() {
 	opt := option.WithCredentialsFile("keys/ecclesia-firebase-key.json")
-
 	// TODO: set FIREBASE_CONFIG as an envornment variable so config can be passed in as nil.
 	var err error
 	fb.app, err = firebase.NewApp(context.Background(), nil, opt)
@@ -33,10 +32,11 @@ func (fb *Firebase) New() {
 }
 
 func (fb *Firebase) CreateUser(user map[string]interface{}) (error) {
+	//SHOULD WE CHECK TO SEE IF USER WITH SAME EMAIL ALREADY EXISTS HERE?
 	var err error
 	_, _, err = fb.client.Collection("users").Add(context.Background(), user)
 	if err != nil {
-		log.Fatalf("Failed adding alovelace: %v", err)
+		log.Fatalf("Failed adding user: %v", err)
 	}
 	return err
 }
@@ -52,30 +52,80 @@ func (fb *Firebase) FindAllUsers(string) ([]models.Account, error) {
 		if err != nil {
 			log.Fatalf("Failed to iterate: %v", err)
 		}
-		accounts = append(accounts, fb.converter(doc.Data()))
+		accounts = append(accounts, converter(doc.Data()))
 	}
 
 	return accounts, nil
 }
 
-func (fb *Firebase) FindUserById(string) (string, error) {
-
-	return "", nil
+func (fb *Firebase) FindUserById(id string) (models.Account, error) {
+	dsnap, err := fb.client.Collection("users").Doc(id).Get(context.Background())
+	if err != nil {
+		log.Fatalf("Failed to Retrieve ID: %v", err)
+		return models.Account{}, err
+	}
+	return converter(dsnap.Data()), nil
 }
 
-func (fb *Firebase) FindUserByEmail(string) (string, error) {
-
-	return "", nil
+func (fb *Firebase) FindUserByEmail(email string) (models.Account, error) {
+	iter := fb.client.Collection("users").OrderBy("email", firestore.Asc).Where("email", "=", email).Limit(1).Documents(context.Background())
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Failed to iterate: %v", err)
+			return models.Account{}, err
+		}
+		return converter(doc.Data()), nil
+	}
+	return models.Account{}, nil
 }
 
-func (fb *Firebase) UpdateUser(string) (string, error) {
-
-	return "", nil
+func (fb *Firebase) UpdateUser(id string, updates map[string]interface{}) (error) {
+	dsnap, err := fb.client.Collection("users").Doc(id).Get(context.Background())
+	if err != nil {
+		log.Fatalf("Failed to Retrieve ID: %v", err)
+	}
+	var data = dsnap.Data()
+	var newUser = map[string]interface{}{
+		"ID":          "",
+		"AccountType": models.Admin,
+		"Email":       "",
+		"Password":    "",
+		"FirstName":   "",
+		"LastName":    "",
+		"Bio":         "",
+		"Industry":    "",
+		"Education":   "",
+		"State":       "",
+		"Reputation":  0,
+		"Interests":   []string{},
+	}
+	for accountType := range newUser {
+		if val, ok := updates[accountType]; ok {
+			newUser[accountType] = val
+		} else {
+			newUser[accountType] = data[accountType]
+		}
+	}
+	fb.RemoveUser(id)
+	fb.CreateUser(newUser)
+	if err != nil {
+		log.Fatalf("Failed to Update User: %v", err)
+		return err
+	}
+	return nil
 }
 
-func (fb *Firebase) RemoveUser(string) (string, error) {
-
-	return "", nil
+func (fb *Firebase) RemoveUser(id string) (error) {
+	_, err := fb.client.Collection("users").Doc(id).Delete(context.Background())
+	if err != nil {
+		log.Fatalf("Failed to Remove User: %v", err)
+		return err
+	}
+	return nil
 }
 
 func converter(data map[string]interface{}) (models.Account) {
