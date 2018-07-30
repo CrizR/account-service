@@ -32,15 +32,15 @@ func NewFirebase() DataAccess {
 	return Firebase{app: app, client: client}
 }
 
-func (fb Firebase) CreateUser(user models.Account) error {
-	_, _, err := fb.client.Collection("users").Add(context.Background(), user)
+func (fb Firebase) CreateAccount(account models.Account) error {
+	_, _, err := fb.client.Collection("users").Add(context.Background(), account)
 	if err != nil {
 		log.Fatalf("Failed adding user: %v", err)
 	}
 	return err
 }
 
-func (fb Firebase) FindAllUsers() ([]models.Account, error) {
+func (fb Firebase) FindAllAccounts() ([]models.Account, error) {
 	iter := fb.client.Collection("users").Documents(context.Background())
 	var accounts []models.Account
 	for {
@@ -57,7 +57,7 @@ func (fb Firebase) FindAllUsers() ([]models.Account, error) {
 	return accounts, nil
 }
 
-func (fb Firebase) FindUserByID(id string) (models.Account, error) {
+func (fb Firebase) FindAccountByID(id string) (models.Account, error) {
 	dsnap, err := fb.client.Collection("users").Doc(id).Get(context.Background())
 	if err != nil {
 		log.Fatalf("Failed to Retrieve ID: %v", err)
@@ -66,7 +66,7 @@ func (fb Firebase) FindUserByID(id string) (models.Account, error) {
 	return converter(dsnap.Data()), nil
 }
 
-func (fb Firebase) FindUserByEmail(email string) (models.Account, error) {
+func (fb Firebase) FindAccountByEmail(email string) (models.Account, error) {
 	iter := fb.client.Collection("users").OrderBy("email", firestore.Asc).Where("email", "=", email).Limit(1).Documents(context.Background())
 	for {
 		doc, err := iter.Next()
@@ -82,7 +82,7 @@ func (fb Firebase) FindUserByEmail(email string) (models.Account, error) {
 	return models.Account{}, nil
 }
 
-func (fb Firebase) UpdateUser(id string, updates map[string]interface{}) error {
+func (fb Firebase) UpdateAccount(id string, updates map[string]interface{}) error {
 	_, err := fb.client.Collection("users").Doc(id).Set(context.Background(), updates, firestore.MergeAll)
 	if err != nil {
 		log.Fatalf("Failed to Update User: %v", err)
@@ -91,7 +91,7 @@ func (fb Firebase) UpdateUser(id string, updates map[string]interface{}) error {
 	return nil
 }
 
-func (fb Firebase) RemoveUser(id string) error {
+func (fb Firebase) RemoveAccount(id string) error {
 	_, err := fb.client.Collection("users").Doc(id).Delete(context.Background())
 	if err != nil {
 		log.Fatalf("Failed to Remove User: %v", err)

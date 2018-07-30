@@ -6,10 +6,10 @@ import (
 
 type DataAccess interface {
 	// Not entirely sure what to the return type is going to be here
-	CreateUser(models.Account) error
-	FindAllUsers() ([]models.Account, error)
-	FindUserByID(string) (models.Account, error)
-	FindUserByEmail(string) (models.Account, error)
-	UpdateUser(string, map[string]interface{}) error
-	RemoveUser(string) error
+	CreateAccount(models.Account) error
+	FindAllAccounts() ([]models.Account, error)
+	FindAccountByID(string) (models.Account, error)
+	FindAccountByEmail(string) (models.Account, error)
+	UpdateAccount(string, map[string]interface{}) error
+	RemoveAccount(string) error
 }
