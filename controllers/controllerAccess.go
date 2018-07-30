@@ -9,6 +9,6 @@ type ControllerAccess interface {
 	FindAllAccount(string) ([]models.Account, error)
 	FindAccountByID(string) (models.Account, error)
 	FindAccountByEmail(string) (models.Account, error)
-	UpdateAccount(string) error
+	UpdateAccount(string, map[string]interface{}) error
 	RemoveAccount(string) error
 }

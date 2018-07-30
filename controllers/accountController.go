@@ -17,7 +17,7 @@ func NewAccountController() AccountController {
 // 	* Add validation to all inputs here
 //	* Handel errors and error logging
 
-func (acct *AccountController) CreateAccount(acctInfo []string) error {
+func (acct *AccountController) CreateAccount(acctInfo models.Account) error {
 	return acct.data.CreateUser(acctInfo)
 }
 
@@ -33,8 +33,8 @@ func (acct *AccountController) FindAccountByEmail(email string) (models.Account,
 	return acct.data.FindUserByEmail(email)
 }
 
-func (acct *AccountController) UpdateAccount(id string) error {
-	return acct.data.UpdateUser(id)
+func (acct *AccountController) UpdateAccount(id string, data map[string]interface{}) error {
+	return acct.data.UpdateUser(id, data)
 }
 
 func (acct *AccountController) RemoveAccount(id string) error {
