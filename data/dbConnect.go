@@ -40,7 +40,7 @@ func (fb Firebase) CreateAccount(account models.Account) error {
 	return err
 }
 
-func (fb Firebase) FindAllAccounts() ([]models.Account, error) {
+func (fb Firebase) GetAllAccounts() ([]models.Account, error) {
 	iter := fb.client.Collection("users").Documents(context.Background())
 	var accounts []models.Account
 	for {
@@ -57,7 +57,7 @@ func (fb Firebase) FindAllAccounts() ([]models.Account, error) {
 	return accounts, nil
 }
 
-func (fb Firebase) FindAccountByID(id string) (models.Account, error) {
+func (fb Firebase) GetAccountByID(id string) (models.Account, error) {
 	dsnap, err := fb.client.Collection("users").Doc(id).Get(context.Background())
 	if err != nil {
 		log.Fatalf("Failed to Retrieve ID: %v", err)
@@ -66,7 +66,7 @@ func (fb Firebase) FindAccountByID(id string) (models.Account, error) {
 	return converter(dsnap.Data()), nil
 }
 
-func (fb Firebase) FindAccountByEmail(email string) (models.Account, error) {
+func (fb Firebase) GetAccountByEmail(email string) (models.Account, error) {
 	iter := fb.client.Collection("users").OrderBy("email", firestore.Asc).Where("email", "=", email).Limit(1).Documents(context.Background())
 	for {
 		doc, err := iter.Next()

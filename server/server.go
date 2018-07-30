@@ -34,10 +34,10 @@ func (s *Server) Start(port string) {
 }
 
 func (s *Server) setRoutes() {
-	s.echo.POST("/api/create/{userId}", s.createUser)
-	s.echo.GET("/api/search/users/{userId}", s.getUserByID)
-	s.echo.GET("/api/search/users", s.getAllUsers)
-	s.echo.GET("/api/search/email/{email}", s.getUserByEmail)
-	s.echo.DELETE("/api/remove/user/{userId}", s.removeUserByID)
-	s.echo.PUT("/api/update/user/{userId}", s.updateUser)
+	s.echo.POST("/api/create/{userId}", s.createAccount)
+	s.echo.GET("/api/search/users/{userId}", s.getAccountByID)
+	s.echo.GET("/api/search/users", s.getAllAccounts)
+	s.echo.GET("/api/search/email/{email}", s.getAccountByEmail)
+	s.echo.DELETE("/api/remove/user/{userId}", s.removeAccount)
+	s.echo.PUT("/api/update/user/{userId}", s.updateAccount)
 }

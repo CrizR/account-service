@@ -4,27 +4,26 @@ import (
 	"github.com/labstack/echo"
 )
 
-func (s *Server) createUser(ctx echo.Context) error {
-
+func (s *Server) createAccount(ctx echo.Context) error {
 	return nil
 }
 
-func (s *Server) getAllUsers(ctx echo.Context) error {
+func (s *Server) getAllAccounts(ctx echo.Context) error {
 	return nil
 }
 
-func (s *Server) getUserByEmail(ctx echo.Context) error {
+func (s *Server) getAccountByEmail(ctx echo.Context) error {
 	return nil
 }
 
-func (s *Server) getUserByID(ctx echo.Context) error {
+func (s *Server) getAccountByID(ctx echo.Context) error {
 	return nil
 }
 
-func (s *Server) removeUserByID(ctx echo.Context) error {
+func (s *Server) removeAccount(ctx echo.Context) error {
 	return nil
 }
 
-func (s *Server) updateUser(ctx echo.Context) error {
+func (s *Server) updateAccount(ctx echo.Context) error {
 	return nil
 }

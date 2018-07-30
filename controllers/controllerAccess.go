@@ -6,9 +6,9 @@ import (
 
 type ControllerAccess interface {
 	CreateAccount([]string) error
-	FindAllAccount(string) ([]models.Account, error)
-	FindAccountByID(string) (models.Account, error)
-	FindAccountByEmail(string) (models.Account, error)
+	GetAllAccount(string) ([]models.Account, error)
+	GetAccountByID(string) (models.Account, error)
+	GetAccountByEmail(string) (models.Account, error)
 	UpdateAccount(string, map[string]interface{}) error
 	RemoveAccount(string) error
 }

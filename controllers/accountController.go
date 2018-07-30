@@ -18,25 +18,25 @@ func NewAccountController() AccountController {
 //	* Handel errors and error logging
 
 func (acct *AccountController) CreateAccount(acctInfo models.Account) error {
-	return acct.data.CreateUser(acctInfo)
+	return acct.data.CreateAccount(acctInfo)
 }
 
-func (acct *AccountController) FindAllAccounts() ([]models.Account, error) {
-	return acct.data.FindAllUsers()
+func (acct *AccountController) GetAllAccounts() ([]models.Account, error) {
+	return acct.data.GetAllAccounts()
 }
 
-func (acct *AccountController) FindAccountByID(id string) (models.Account, error) {
-	return acct.data.FindUserByID(id)
+func (acct *AccountController) GetAccountByID(id string) (models.Account, error) {
+	return acct.data.GetAccountByID(id)
 }
 
-func (acct *AccountController) FindAccountByEmail(email string) (models.Account, error) {
-	return acct.data.FindUserByEmail(email)
+func (acct *AccountController) GetAccountByEmail(email string) (models.Account, error) {
+	return acct.data.GetAccountByEmail(email)
 }
 
 func (acct *AccountController) UpdateAccount(id string, data map[string]interface{}) error {
-	return acct.data.UpdateUser(id, data)
+	return acct.data.UpdateAccount(id, data)
 }
 
 func (acct *AccountController) RemoveAccount(id string) error {
-	return acct.data.RemoveUser(id)
+	return acct.data.RemoveAccount(id)
 }
