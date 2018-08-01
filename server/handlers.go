@@ -35,7 +35,7 @@ func (s *Server) getAllAccounts(ctx echo.Context) error {
 }
 
 func (s *Server) getAccountByEmail(ctx echo.Context) error {
-	account, err := s.accounts.GetAccountByEmail(ctx.QueryParam("email"))
+	account, err := s.accounts.GetAccountByEmail(ctx.Param("email"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -43,15 +43,15 @@ func (s *Server) getAccountByEmail(ctx echo.Context) error {
 }
 
 func (s *Server) getAccountByID(ctx echo.Context) error {
-	account, err := s.accounts.GetAccountByID(ctx.QueryParam("id"))
+	account, err := s.accounts.GetAccountByID(ctx.Param("id"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	return ctx.JSONPretty(http.StatusOK, account, indent)
+	return ctx.JSONPretty(http.StatusOK, &account, indent)
 }
 
 func (s *Server) removeAccount(ctx echo.Context) error {
-	err := s.accounts.RemoveAccount(ctx.QueryParam("id"))
+	err := s.accounts.RemoveAccount(ctx.Param("id"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -64,7 +64,7 @@ func (s *Server) updateAccount(ctx echo.Context) error {
 	if err := ctx.Bind(&update); err != nil {
 		log.Fatal(err)
 	}
-	if err := s.accounts.UpdateAccount(ctx.QueryParam("id"), nil); err != nil {
+	if err := s.accounts.UpdateAccount(ctx.Param("id"), nil); err != nil {
 		log.Fatal(err)
 	}
 	return ctx.JSON(http.StatusOK, nil)

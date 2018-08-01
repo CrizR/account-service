@@ -10,7 +10,8 @@ type AccountController struct {
 }
 
 func NewAccountController() AccountController {
-	return AccountController{data: data.NewFirebase()}
+	firebase := data.NewFirebase()
+	return AccountController{data: firebase}
 }
 
 // TODO:
