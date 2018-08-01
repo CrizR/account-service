@@ -6,7 +6,7 @@ import (
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
-
+	"firebase.google.com/go/auth"
 	"github.com/ecclesia-dev/account-service/models"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
@@ -15,6 +15,7 @@ import (
 type Firebase struct {
 	app    *firebase.App
 	client *firestore.Client
+	auth   *auth.Client
 }
 
 func NewFirebase() DataAccess {
@@ -29,10 +30,21 @@ func NewFirebase() DataAccess {
 	if err != nil {
 		log.Fatalf("error initializing app: %v\n", err)
 	}
-	return Firebase{app: app, client: client}
+	auth, err := app.Auth(context.Background())
+	if err != nil {
+		log.Fatalf("error initializing app: %v\n", err)
+	}
+	return Firebase{app: app, client: client, auth:auth}
 }
 
 func (fb Firebase) CreateAccount(account models.Account) error {
+	params := (&auth.UserToCreate{}).
+		Email(account.Email).
+		Password(account.Password).
+		EmailVerified(true)
+	account.Email = ""
+	account.Password = ""
+	//_, err := auth.Client.CreateUser(context.Background(), params)
 	_, _, err := fb.client.Collection("users").Add(context.Background(), account)
 	if err != nil {
 		log.Fatalf("Failed adding user: %v", err)

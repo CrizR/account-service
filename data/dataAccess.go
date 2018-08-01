@@ -5,7 +5,6 @@ import (
 )
 
 type DataAccess interface {
-	// Not entirely sure what to the return type is going to be here
 	CreateAccount(models.Account) error
 	GetAllAccounts() ([]models.Account, error)
 	GetAccountByID(string) (models.Account, error)
