@@ -18,7 +18,7 @@ type Firebase struct {
 }
 
 func NewFirebase() DataAccess {
-	opt := option.WithCredentialsFile("keys/ecclesia-firebase-key.json")
+	opt := option.WithCredentialsFile("../keys/ecclesia-firebase-key.json")
 	// TODO: set FIREBASE_CONFIG as an envornment variable so config can
 	// 		 be passed in as nil.
 	app, err := firebase.NewApp(context.Background(), nil, opt)
@@ -67,28 +67,22 @@ func (fb Firebase) GetAccountByID(id string) (models.Account, error) {
 }
 
 func (fb Firebase) GetAccountByEmail(email string) (models.Account, error) {
-	iter := fb.client.Collection("users").OrderBy("email", firestore.Asc).Where("email", "=", email).Limit(1).Documents(context.Background())
-	for {
-		doc, err := iter.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			log.Fatalf("Failed to iterate: %v", err)
-			return models.Account{}, err
-		}
-		return converter(doc.Data()), nil
+	iter := fb.client.Collection("users").Where("email", "==", email).Limit(1).Documents(context.Background())
+
+	doc, err := iter.Next()
+	if err != nil {
+		log.Fatal(err)
 	}
-	return models.Account{}, nil
+	return converter(doc.Data()), err
+
 }
 
 func (fb Firebase) UpdateAccount(id string, updates map[string]interface{}) error {
 	_, err := fb.client.Collection("users").Doc(id).Set(context.Background(), updates, firestore.MergeAll)
 	if err != nil {
 		log.Fatalf("Failed to Update User: %v", err)
-		return err
 	}
-	return nil
+	return err
 }
 
 func (fb Firebase) RemoveAccount(id string) error {
@@ -101,18 +95,19 @@ func (fb Firebase) RemoveAccount(id string) error {
 }
 
 func converter(data map[string]interface{}) models.Account {
+
 	return models.Account{
-		ID:          data["ID"].(int),
-		AccountType: data["AccountType"].(models.AccountType),
-		Email:       data["Email"].(string),
-		Password:    data["Password"].(string),
-		FirstName:   data["FirstName"].(string),
-		LastName:    data["LastName"].(string),
-		Bio:         data["Bio"].(string),
-		Industry:    data["Industry"].(string),
-		Education:   data["Education"].(string),
-		State:       data["State"].(string),
-		Reputation:  data["Reputation"].(int),
-		Interests:   data["Interests"].([]string),
+		ID:          data["id"].(string),
+		AccountType: data["account_type"].(int64),
+		Email:       data["email"].(string),
+		Password:    data["password"].(string),
+		FirstName:   data["first_name"].(string),
+		LastName:    data["last_name"].(string),
+		Bio:         data["bio"].(string),
+		Industry:    data["industry"].(string),
+		Education:   data["education"].(string),
+		State:       data["state"].(string),
+		Reputation:  data["reputation"].(int64),
+		Interests:   data["interests"].([]interface{}),
 	}
 }
