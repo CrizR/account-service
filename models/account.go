@@ -46,7 +46,7 @@ func NewAccount(data map[string]interface{}) Account {
 	}
 }
 
-func (ac Account) convertToMap() map[string]interface{} {
+func (ac Account) ConvertToMap() map[string]interface{} {
 	return map[string]interface{}{
 		"ID":          ac.ID,
 		"AccountType": ac.AccountType,

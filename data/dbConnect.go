@@ -17,7 +17,7 @@ type Firebase struct {
 	auth   *auth.Client
 }
 
-func NewFirebase() Firebase {
+func NewFirebase() DataAccess {
 	opt := option.WithCredentialsFile("../keys/ecclesia-firebase-key.json")
 	// TODO: set FIREBASE_CONFIG as an envornment variable so config can
 	// 		 be passed in as nil.
@@ -48,7 +48,9 @@ func (fb Firebase) CreateAccount(account models.Account) (string, error) {
 		log.Fatalf("Failed adding user: %v", err)
 	}
 	account.ID = user.UID
-	_, err = fb.client.Collection("users").Doc(user.UID).Set(context.Background(), account, firestore.MergeAll)
+	user_data := account.ConvertToMap()
+	delete(user_data, "Password")
+	_, err = fb.client.Collection("users").Doc(user.UID).Set(context.Background(), user_data, firestore.MergeAll)
 	if err != nil {
 		log.Fatalf("Failed adding user: %v", err)
 	}
