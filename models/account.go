@@ -1,10 +1,10 @@
 package models
 
 // AccountType represents authorization level of an account.
-type AccountType int
+type AccountType int64
 
 const (
-	AdminAccount AccountType = iota
+	AdminAccount    AccountType = iota
 	StandardAccount
 	AdvancedAccount
 )
@@ -23,4 +23,42 @@ type Account struct {
 	State       string        `json:"state" db:"state"`
 	Reputation  int64         `json:"reputation" db:"reputation"`
 	Interests   []interface{} `json:"interests" db:"interests"`
+}
+
+func NewAccount(data map[string]interface{}) Account {
+	if (data != nil) {
+		return Account{
+			ID:          data["id"].(string),
+			AccountType: data["account_type"].(int64),
+			Email:       data["email"].(string),
+			Password:    data["password"].(string),
+			FirstName:   data["first_name"].(string),
+			LastName:    data["last_name"].(string),
+			Bio:         data["bio"].(string),
+			Industry:    data["industry"].(string),
+			Education:   data["education"].(string),
+			State:       data["state"].(string),
+			Reputation:  data["reputation"].(int64),
+			Interests:   data["interests"].([]interface{}),
+		}
+	} else {
+		return Account{}
+	}
+}
+
+func (ac Account) ConvertToMap() map[string]interface{} {
+	return map[string]interface{}{
+		"ID":          ac.ID,
+		"AccountType": ac.AccountType,
+		"Email":       ac.Email,
+		"Password":    ac.Password,
+		"FirstName":   ac.FirstName,
+		"LastName":    ac.LastName,
+		"Bio":         ac.Bio,
+		"Industry":    ac.Industry,
+		"Education":   ac.Education,
+		"State":       ac.State,
+		"Reputation":  ac.Reputation,
+		"Interests":   ac.Interests,
+	}
 }
