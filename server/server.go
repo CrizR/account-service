@@ -34,7 +34,7 @@ func (s *Server) Start(port string) {
 }
 
 func (s *Server) setRoutes() {
-	s.echo.POST("/api/create/:id", s.createAccount)
+	s.echo.POST("/api/accounts/create", s.createAccount)
 	s.echo.GET("/api/accounts/:id", s.getAccountByID)
 	s.echo.GET("/api/accounts", s.getAllAccounts)
 	s.echo.GET("/api/accounts/email/:email", s.getAccountByEmail)
