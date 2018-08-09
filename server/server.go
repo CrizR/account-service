@@ -6,9 +6,11 @@ import (
 	"github.com/ecclesia-dev/account-service/controllers"
 	"github.com/labstack/echo"
 	mw "github.com/labstack/echo/middleware"
+	"github.com/sirupsen/logrus"
 )
 
 type Server struct {
+	log    *logrus.Entry
 	echo     *echo.Echo
 	accounts controllers.AccountController
 }
