@@ -3,10 +3,11 @@ package data
 import (
 	"context"
 	"log"
+
 	"cloud.google.com/go/firestore"
 	"firebase.google.com/go"
 	"firebase.google.com/go/auth"
-	"account-service/models"
+	"github.com/ecclesia-dev/account-service/models"
 	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 )
@@ -22,16 +23,18 @@ func NewFirebase() DataAccess {
 	// TODO: set FIREBASE_CONFIG as an envornment variable so config can be passed in as nil.
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal("Failed to initialize firebase app: ", err)
 	}
 	client, err := app.Firestore(context.Background())
 	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
+		log.Fatal("error initializing app:\n", err)
 	}
 	auth, err := app.Auth(context.Background())
 	if err != nil {
-		log.Fatalf("error initializing app: %v\n", err)
+		log.Printf("Failed to initialize Auth: %v\n", err)
+
 	}
+
 	return Firebase{app: app, client: client, auth: auth}
 }
 
@@ -41,25 +44,25 @@ func (fb Firebase) CreateAccount(account models.Account) (string, error) {
 		Email(account.Email).
 		Password(account.Password)
 	account.Password = ""
-	user, err := auth.Client.CreateUser(nil, context.Background(), params)
+	user, err := fb.auth.CreateUser(context.Background(), params)
 	if err != nil {
 		log.Fatalf("Failed adding user: %v", err)
 	}
-	account.ID = user.UID
 	user_data := account.ConvertToMap()
 	delete(user_data, "Password")
+	delete(user_data, "ID")
 	_, err = fb.client.Collection("users").Doc(user.UID).Set(context.Background(), user_data, firestore.MergeAll)
 	if err != nil {
 		log.Fatalf("Failed adding user: %v", err)
 	}
-	token, err = auth.Client.CustomToken(nil, context.Background(), user.UID)
+	token, err = fb.auth.CustomToken(context.Background(), user.UID)
 	if err != nil {
 		log.Fatalf("Failed adding user: %v", err)
 	}
 	return token, err
 }
 
-func (fb Firebase) GetAllAccounts(token string) ([]models.Account, error) {
+func (fb Firebase) GetAllAccounts() ([]models.Account, error) {
 	var accounts []models.Account
 	iter := fb.client.Collection("users").Documents(context.Background())
 	var err error
@@ -84,7 +87,7 @@ func (fb Firebase) GetAccountByID(id string) (models.Account, error) {
 	return models.NewAccount(data), err
 }
 
-func (fb Firebase) GetAccountByEmail(token string, email string) (models.Account, error) {
+func (fb Firebase) GetAccountByEmail(email string) (models.Account, error) {
 	var data map[string]interface{}
 	iter := fb.client.Collection("users").Where("email", "==", email).Limit(1).Documents(context.Background())
 	doc, err := iter.Next()
@@ -110,7 +113,6 @@ func (fb Firebase) UpdateAccount(id string, updates map[string]interface{}) erro
 	}
 	return err
 }
-
 
 func (fb Firebase) changeEmail(id string, newEmail string) error {
 	params := (&auth.UserToUpdate{}).

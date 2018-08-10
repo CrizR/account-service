@@ -5,12 +5,10 @@ import (
 )
 
 type DataAccess interface {
-	CreateAccount(models.Account) error
+	CreateAccount(account models.Account) (string, error)
 	GetAllAccounts() ([]models.Account, error)
 	GetAccountByID(id string) (models.Account, error)
-	GetAccountByEmail(id string, email string) (models.Account, error)
+	GetAccountByEmail(email string) (models.Account, error)
 	UpdateAccount(id string, updates map[string]interface{}) error
-	changeEmail(id string, newEmail string) error
-	changePassword(id string, newPassword string) error
 	RemoveAccount(id string) error
 }
