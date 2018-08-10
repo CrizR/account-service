@@ -71,7 +71,7 @@ func (s *Server) updateAccount(ctx echo.Context) error {
 }
 
 
-func (s *Server) RefreshToken(ctx echo.Context) error {
+func (s *Server) refreshToken(ctx echo.Context) error {
 	token, err := s.accounts.GetToken(ctx.Param("id"))
 	if err != nil {
 		log.Fatal(err)
