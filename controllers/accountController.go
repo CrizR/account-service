@@ -19,7 +19,8 @@ func NewAccountController() AccountController {
 //	* Handel errors and error logging
 
 func (acct *AccountController) CreateAccount(acctInfo models.Account) error {
-	return acct.data.CreateAccount(acctInfo)
+	_, err := acct.data.CreateAccount(acctInfo)
+	return err
 }
 
 func (acct *AccountController) GetAllAccounts() ([]models.Account, error) {
