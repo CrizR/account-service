@@ -23,8 +23,6 @@ func AuthRequest(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			log.Printf("Failed to verify token: %v\n", err)
 		}
-
-		err1 := next(ctx)
-		return err
+		return next(ctx)
 	}
 }

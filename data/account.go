@@ -18,7 +18,7 @@ type Firebase struct {
 	auth   *auth.Client
 }
 
-func NewFirebase() DataAccess {
+func NewFirebase() AccountAccess {
 	opt := option.WithCredentialsFile("../keys/ecclesia-firebase-key.json")
 	// TODO: set FIREBASE_CONFIG as an envornment variable so config can be passed in as nil.
 	app, err := firebase.NewApp(context.Background(), nil, opt)
@@ -38,8 +38,7 @@ func NewFirebase() DataAccess {
 	return Firebase{app: app, client: client, auth: auth}
 }
 
-func (fb Firebase) CreateAccount(account models.Account) (string, error) {
-	var token string
+func (fb Firebase) CreateAccount(account models.Account) error {
 	params := (&auth.UserToCreate{}).
 		Email(account.Email).
 		Password(account.Password)
@@ -55,11 +54,7 @@ func (fb Firebase) CreateAccount(account models.Account) (string, error) {
 	if err != nil {
 		log.Fatalf("Failed adding user: %v", err)
 	}
-	token, err = fb.auth.CustomToken(context.Background(), user.UID)
-	if err != nil {
-		log.Fatalf("Failed adding user: %v", err)
-	}
-	return token, err
+	return err
 }
 
 func (fb Firebase) GetAllAccounts() ([]models.Account, error) {
@@ -139,6 +134,32 @@ func (fb Firebase) RemoveAccount(id string) error {
 	_, err = fb.client.Collection("users").Doc(id).Delete(context.Background())
 	if err != nil {
 		log.Fatalf("Failed to Remove User: %v", err)
+	}
+	return err
+}
+
+
+func (fb Firebase) GetToken(ID string) (string, error) {
+	token, err := fb.auth.CustomToken(context.Background(), ID)
+	if err != nil {
+		log.Fatalf("Failed logging in: %v", err)
+	}
+	return token, err
+}
+
+func (fb Firebase) Login(username string, password string) (string, error) {
+	account, err := fb.GetAccountByEmail(username)
+	if account.Password == password {
+		return fb.GetToken(account.ID)
+	} else {
+		return "", err
+	}
+}
+
+func (fb Firebase) Logout(ID string) (error) {
+	err := fb.auth.RevokeRefreshTokens(context.Background(), ID)
+	if err != nil {
+		log.Fatalf("Failed logging in: %v", err)
 	}
 	return err
 }

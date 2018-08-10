@@ -69,3 +69,29 @@ func (s *Server) updateAccount(ctx echo.Context) error {
 	}
 	return ctx.JSON(http.StatusOK, nil)
 }
+
+
+func (s *Server) RefreshToken(ctx echo.Context) error {
+	token, err := s.accounts.GetToken(ctx.Param("id"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return ctx.JSON(http.StatusOK, token)
+}
+
+func (s *Server) login(ctx echo.Context) error {
+	token, err := s.accounts.Login(ctx.Param("username"), ctx.Param("password"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return ctx.JSON(http.StatusOK, token)
+}
+
+
+func (s *Server) logout(ctx echo.Context) error {
+	if err := s.accounts.Logout(ctx.Param("id")); err != nil {
+		log.Fatal(err)
+	}
+	return ctx.JSON(http.StatusOK, nil)
+}
+
