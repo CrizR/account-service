@@ -1,16 +1,13 @@
 package server
 
 import (
-	"os"
-
 	"github.com/ecclesia-dev/account-service/controllers"
 	"github.com/labstack/echo"
-	mw "github.com/labstack/echo/middleware"
 	"github.com/sirupsen/logrus"
 )
 
 type Server struct {
-	log    *logrus.Entry
+	log      *logrus.Entry
 	echo     *echo.Echo
 	accounts controllers.AccountController
 }
@@ -18,15 +15,9 @@ type Server struct {
 func New(ctlr controllers.AccountController) Server {
 	e := echo.New()
 	e.HideBanner = true
-	logger := mw.LoggerWithConfig(mw.LoggerConfig{
-		Skipper: mw.DefaultSkipper,
-		Format: `{"time":"${time_rfc3339_nano}","remote_ip":"${remote_ip}","host":"${host}",` +
-			`"method":"${method}","uri":"${uri}","status":${status}, "latency":${latency}}` + "\n",
-		Output: os.Stdout,
-	})
-	e.Use(logger)
-
-	serv := Server{echo: e, accounts: ctlr}
+	logger := logrus.NewEntry(logrus.New())
+	serv := Server{log: logger, echo: e, accounts: ctlr}
+	e.Use(serv.LogRequest)
 	return serv
 }
 

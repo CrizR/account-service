@@ -8,12 +8,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (s *Server) setupRequest(f echo.HandlerFunc) echo.HandlerFunc {
+func (s *Server) LogRequest(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		req := ctx.Request()
 		// Default fields
 
-		rand, err := uuid.NewRandom()
+		rand, _ := uuid.NewRandom()
+
 		logger := s.log.WithFields(log.Fields{
 			"method":     req.Method,
 			"path":       req.URL.Path,
@@ -36,10 +37,7 @@ func (s *Server) setupRequest(f echo.HandlerFunc) echo.HandlerFunc {
 			"user_agent":     req.UserAgent(),
 			"content_length": req.ContentLength,
 		}).Info("Starting request")
-		err = f(ctx)
-		if err != nil {
-			ctx.Error(err)
-		}
-		return err
+
+		return next(ctx)
 	}
 }
