@@ -29,7 +29,7 @@ func (s *Server) createAccount(ctx echo.Context) error {
 func (s *Server) getAllAccounts(ctx echo.Context) error {
 	accounts, err := s.accounts.GetAllAccounts()
 	if err != nil {
-		log.Fatal(err)
+		log.Error(err)
 	}
 	return ctx.JSONPretty(http.StatusOK, accounts, indent)
 }

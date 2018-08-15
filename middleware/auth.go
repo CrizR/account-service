@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	firebase "firebase.google.com/go"
 	"github.com/labstack/echo"
