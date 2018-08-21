@@ -39,7 +39,7 @@ func NewFirebase() AccountAccess {
 	return Firebase{app: app, client: client, auth: auth}
 }
 
-func (fb Firebase) CreateAccount(account models.Account) error {
+func (fb Firebase) CreateAccount(account models.Account) (string, error) {
 	params := (&auth.UserToCreate{}).Email(account.Email).Password(account.Password)
 	account.Password = ""
 	user, err := fb.auth.CreateUser(context.Background(), params)
@@ -53,7 +53,7 @@ func (fb Firebase) CreateAccount(account models.Account) error {
 	if err != nil {
 		log.Errorf("Failed adding account to firebase: %v", err)
 	}
-	return err
+	return "", err
 }
 
 func (fb Firebase) GetAllAccounts() ([]models.Account, error) {
