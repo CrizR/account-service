@@ -10,8 +10,7 @@ type AccountController struct {
 }
 
 func NewAccountController() AccountController {
-	firebase := data.NewFirebase()
-	return AccountController{access: firebase}
+	return AccountController{access: data.NewFirebase()}
 }
 
 // TODO:
@@ -19,7 +18,7 @@ func NewAccountController() AccountController {
 //	* Handel errors and error logging
 
 func (acct *AccountController) CreateAccount(acctInfo models.Account) error {
-	_, err := acct.data.CreateAccount(acctInfo)
+	_, err := acct.access.CreateAccount(acctInfo)
 	return err
 }
 
