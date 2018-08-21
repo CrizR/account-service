@@ -1,4 +1,5 @@
 /keys
 *.idea
 /app/main
+main
 .DS_Store
