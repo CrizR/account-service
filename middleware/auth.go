@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	firebase "firebase.google.com/go"
 	"github.com/labstack/echo"
@@ -23,6 +23,7 @@ func AuthRequest(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			log.Printf("Failed to verify token: %v\n", err)
 		}
+
 		return next(ctx)
 	}
 }

@@ -4,7 +4,7 @@ package models
 type AccountType int64
 
 const (
-	AdminAccount    AccountType = iota
+	AdminAccount AccountType = iota
 	StandardAccount
 	AdvancedAccount
 )
@@ -26,27 +26,27 @@ type Account struct {
 }
 
 func NewAccount(data map[string]interface{}) Account {
-	if (data != nil) {
-		return Account{
-			ID:          data["id"].(string),
-			AccountType: data["account_type"].(int64),
-			Email:       data["email"].(string),
-			Password:    data["password"].(string),
-			FirstName:   data["first_name"].(string),
-			LastName:    data["last_name"].(string),
-			Bio:         data["bio"].(string),
-			Industry:    data["industry"].(string),
-			Education:   data["education"].(string),
-			State:       data["state"].(string),
-			Reputation:  data["reputation"].(int64),
-			Interests:   data["interests"].([]interface{}),
-		}
-	} else {
+	if data == nil {
 		return Account{}
+	}
+
+	return Account{
+		ID:          data["id"].(string),
+		AccountType: data["account_type"].(int64),
+		Email:       data["email"].(string),
+		Password:    data["password"].(string),
+		FirstName:   data["first_name"].(string),
+		LastName:    data["last_name"].(string),
+		Bio:         data["bio"].(string),
+		Industry:    data["industry"].(string),
+		Education:   data["education"].(string),
+		State:       data["state"].(string),
+		Reputation:  data["reputation"].(int64),
+		Interests:   data["interests"].([]interface{}),
 	}
 }
 
-func (ac Account) ConvertToMap() map[string]interface{} {
+func (ac Account) Map() map[string]interface{} {
 	return map[string]interface{}{
 		"ID":          ac.ID,
 		"AccountType": ac.AccountType,

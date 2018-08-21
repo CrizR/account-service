@@ -5,7 +5,7 @@ import (
 )
 
 type AccountAccess interface {
-	CreateAccount(account models.Account) error
+	CreateAccount(account models.Account) (string, error)
 	GetAllAccounts() ([]models.Account, error)
 	GetAccountByID(id string) (models.Account, error)
 	GetAccountByEmail(email string) (models.Account, error)
@@ -13,5 +13,5 @@ type AccountAccess interface {
 	RemoveAccount(id string) error
 	GetToken(ID string) (string, error)
 	Login(username string, password string) (string, error)
-	Logout(ID string) (error)
+	Logout(ID string) error
 }
