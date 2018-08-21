@@ -19,11 +19,12 @@ func (s *Server) createAccount(ctx echo.Context) error {
 		log.Error(err)
 	}
 	// Add validation call here
-	if err := s.accounts.CreateAccount(account); err != nil {
+	id, err := s.accounts.CreateAccount(account)
+	if err != nil {
 		log.Error(err)
 	}
 
-	return ctx.JSON(http.StatusOK, nil)
+	return ctx.JSON(http.StatusOK, id)
 }
 
 func (s *Server) getAllAccounts(ctx echo.Context) error {
@@ -70,8 +71,7 @@ func (s *Server) updateAccount(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, nil)
 }
 
-
-func (s *Server) refreshToken(ctx echo.Context) error {
+func (s *Server) refreshAuthToken(ctx echo.Context) error {
 	token, err := s.accounts.GetToken(ctx.Param("id"))
 	if err != nil {
 		log.Fatal(err)
@@ -87,11 +87,9 @@ func (s *Server) login(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, token)
 }
 
-
 func (s *Server) logout(ctx echo.Context) error {
 	if err := s.accounts.Logout(ctx.Param("id")); err != nil {
 		log.Fatal(err)
 	}
 	return ctx.JSON(http.StatusOK, nil)
 }
-

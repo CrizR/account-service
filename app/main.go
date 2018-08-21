@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/ecclesia-dev/account-service/controllers"
+	"github.com/ecclesia-dev/account-service/data"
 	"github.com/ecclesia-dev/account-service/server"
 )
 
 func main() {
-	acctCtlr := controllers.NewAccountController()
-	serv := server.New(acctCtlr)
+	accounts := data.NewAccountAccess()
+	serv := server.New(accounts)
 	serv.Start(":8080")
 }
