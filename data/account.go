@@ -47,13 +47,15 @@ func (fb Firebase) CreateAccount(account models.Account) (string, error) {
 		log.Errorf("Failed to create authentification details for account: %v", err)
 	}
 	user_data := account.Map()
+	id := user.UID
 	delete(user_data, "Password")
 	delete(user_data, "ID")
 	_, err = fb.client.Collection("users").Doc(user.UID).Set(context.Background(), user_data, firestore.MergeAll)
 	if err != nil {
 		log.Errorf("Failed adding account to firebase: %v", err)
 	}
-	return "", err
+
+	return id, err
 }
 
 func (fb Firebase) GetAllAccounts() ([]models.Account, error) {
